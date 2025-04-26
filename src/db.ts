@@ -1,1 +1,31 @@
 //Create user models and schemas here 
+import mongoose , { model, Schema} from "mongoose";
+
+mongoose.connect("mongodb+srv://shriman:UIcBnMgOHT0RyN9f@cluster0.k0jdf.mongodb.net/brainly-second-brain");
+
+
+
+const UserScehma = new Schema({
+    username:{type:String, unique:true},
+    password:{type:String}
+})
+
+
+
+export const UserModel= model("User", UserScehma);
+
+const ContentSchema= new Schema({
+   
+    title:String,
+    link:String,
+    tags:[{type:mongoose.Types.ObjectId, ref:'Tag'}],
+    userId:{type:mongoose.Types.ObjectId, ref:"User", required:true}
+
+
+
+})
+
+export const ContentModel= model("Content",ContentSchema);
+
+
+

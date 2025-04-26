@@ -1,0 +1,1 @@
+export const JWT_PASSWORD="shri@1234"
