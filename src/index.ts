@@ -5,9 +5,13 @@
 import express from 'express';
 import mongoose from 'mongoose';
 import jwt from 'jsonwebtoken';
+
+import dotenv from 'dotenv';
+
+dotenv.config();
 import { UserModel ,ContentModel} from './db';
 
-import { JWT_PASSWORD } from './config';
+import { JWT_PASSWORD, PORT, MONGO_URL } from './config';
 import { userMiddleware } from './middleware';
 
 //.d.ts
@@ -47,8 +51,8 @@ app.post("/api/v1/signin",async (req,res)=>{
     const password= req.body.password;
 
     const existingUser= await UserModel.findOne({
-        username,
-        password
+        username:username,
+        password:password
     })
 
     if(existingUser){
@@ -110,7 +114,7 @@ app.get("/api/v1/content",userMiddleware, async(req,res)=>{
         const content= await ContentModel.find({
             userId:userId
         }).populate("userId","username")
-    
+    // Here above we learn the populate through the other relational schema
         res.json({
             content
         })
@@ -169,7 +173,13 @@ app.get("/api/v1/brain/:sharelink",(req,res)=>{
 })
 
 
-app.listen(3000);
+async function main(){
+    app.listen(PORT);
+  await mongoose.connect(MONGO_URL);
+}
+
+main();
+
 
 
 

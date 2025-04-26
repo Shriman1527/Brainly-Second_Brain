@@ -1,7 +1,9 @@
 //Create user models and schemas here 
 import mongoose , { model, Schema} from "mongoose";
+import {MONGO_URL} from './config'
 
-mongoose.connect("mongodb+srv://shriman:UIcBnMgOHT0RyN9f@cluster0.k0jdf.mongodb.net/brainly-second-brain");
+
+
 
 
 
