@@ -30,4 +30,13 @@ const ContentSchema= new Schema({
 export const ContentModel= model("Content",ContentSchema);
 
 
+const ShareSchema= new Schema({
+    shareId:{type:String, required:true, unique:true},
+    contentId:{type:mongoose.Schema.ObjectId, ref:"Content", reuired:true}
+})
+
+export const ShareModel= model("Share", ShareSchema);
+
+
+
 

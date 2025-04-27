@@ -9,10 +9,12 @@ import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
 
 dotenv.config();
-import { UserModel ,ContentModel} from './db';
+import { UserModel ,ContentModel, ShareModel} from './db';
 
 import { JWT_PASSWORD, PORT, MONGO_URL } from './config';
 import { userMiddleware } from './middleware';
+import {randomBytes} from 'crypto'
+
 
 //.d.ts
 
@@ -164,21 +166,91 @@ app.delete("/api/v1/content",userMiddleware, async (req,res)=>{
     
 })
 
-app.post("/api/v1/brain/share",(req,res)=>{
+app.post("/api/v1/brain/share",userMiddleware, async (req,res)=>{
 
+    const contentId= req.body.contentId;
+    //@ts-ignore
+    const userId= req.userId;
+
+    try{
+        const content= await ContentModel.findOne({
+            _id:contentId,
+            userId:userId
+        }) 
+
+        if(!content){
+            res.status(404).json({
+                message:"content not found"
+            })
+        }
+
+        const shareId= randomBytes(6).toString('hex'); // 12 characters
+
+
+        await ShareModel.create({
+            shareId:shareId,
+            contentId:contentId
+        })
+
+        res.json({
+            shareLink:`/api/v1/brain/${shareId}`
+        })
+
+    }catch(e){
+        res.status(500).json({
+            message:"Error while creating the share link"
+        })
+    }
 })
 
-app.get("/api/v1/brain/:sharelink",(req,res)=>{
+app.get("/api/v1/brain/:sharelink" , userMiddleware,async (req,res)=>{
 
+    const shareId= req.params.sharelink;
+
+    try{
+
+    const shared=  await ShareModel.findOne({
+            shareId:shareId
+        }).populate("contentId");
+
+    if(!shared){
+       res.status(404).json({
+            message:"Shared link not found"
+
+        })
+    }
+
+
+    res.json({
+        content:shared?.contentId
+    })
+
+
+
+    }catch(e){
+        res.status(500).json({
+            message:"Error while fetching the shared conetnt"
+
+        })
+    }
 })
 
 
-async function main(){
-    app.listen(PORT);
-  await mongoose.connect(MONGO_URL);
-}
-
-main();
+async function main() {
+    try {
+      await mongoose.connect(MONGO_URL);
+      console.log("Connected to MongoDB");
+  
+      app.listen(PORT, () => {
+        console.log(`Server running on port ${PORT}`);
+      });
+    } catch (error) {
+      console.error("Failed to connect to MongoDB", error);
+    }
+  }
+  
+  main();
+  
 
 
 
