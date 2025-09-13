@@ -5,9 +5,7 @@ import Dashboard from "./pages/Dashboard";
 import { SignUp } from "./pages/Signup";
 import { SignIn } from "./pages/Signin";
 import { BrowserRouter, Routes,Route } from "react-router-dom";
-import dotenv from 'dotenv';
 
-dotenv.config();
 
 
 

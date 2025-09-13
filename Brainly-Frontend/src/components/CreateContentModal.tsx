@@ -3,7 +3,7 @@ import { CrossIcon } from "../Icons/CrossIcon";
 import { Button } from "./Button";
 
 import { Input } from "./Input";
-import { BACKEND_URL } from "../config";
+
 import axios from 'axios'
 
 enum ContentType{
@@ -23,7 +23,7 @@ export function CreateContentModal({open,onClose}){
     const title= titleRef.current?.value;
     const link= linkRef.current?.value;
 
-    await axios.post(`${BACKEND_URL}/api/v1/content`,{
+    await axios.post(`http://localhost:3000/api/v1/content`,{
         link,
         type,
         title

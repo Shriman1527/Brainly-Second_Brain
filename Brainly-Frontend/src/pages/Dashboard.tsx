@@ -8,7 +8,7 @@ import { CreateContentModal } from '../components/CreateContentModal'
 import { useEffect, useState } from 'react'
 import { Sidebar } from '../components/SideBar'
 import { useContent } from '../hooks/useContent'
-import { BACKEND_URL } from '../config'
+
 import axios from 'axios'
 
 
@@ -27,7 +27,7 @@ function Dashboard() {
 
     async function deleteContent(id: string) {
       try {
-        await axios.delete(`${BACKEND_URL}/api/v1/content`, {
+        await axios.delete(`http://localhost:3000/api/v1/content`, {
           data: { contentId: id },
           headers: {
             Authorization: localStorage.getItem("token"),
@@ -53,7 +53,7 @@ function Dashboard() {
               setModalOpen(true)
             }} variant="primary" text="Add Content" startIcon={<PlusIcon/>}/>
             <Button onClick={async ()=>{
-          const responce=  await  axios.post(`${BACKEND_URL}/api/v1/brain/share`,{
+          const responce=  await  axios.post(`http://localhost:3000/api/v1/brain/share`,{
                 share:true
               },{
                 headers:{
